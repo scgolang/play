@@ -28,11 +28,14 @@ type App struct {
 	mu sync.RWMutex
 }
 
-// New creates a new app.
-func New() *App {
-	return &App{
-		m: map[string]*sc.Synthdef{},
-	}
+// New creates a new app with some options already added:
+//     -l        Lists the synthdefs for the app.
+//     -s SOUND  Plays a sound.
+func New(fs *flag.FlagSet) *App {
+	app := &App{m: map[string]*sc.Synthdef{}}
+	fs.BoolVar(&app.list, "l", false, "list sounds")
+	fs.StringVar(&app.sound, "s", "", "play a sound")
+	return app
 }
 
 // Add adds a synthdef to the app.
@@ -46,16 +49,6 @@ func (app *App) Add(name string, f sc.UgenFunc) error {
 	app.m[name] = sc.NewSynthdef(name, f)
 	app.mu.Unlock()
 	return nil
-}
-
-// FlagSet creates a new FlagSet with some options already added:
-//     -l        Lists the synthdefs for the app.
-//     -s SOUND  Plays a sound.
-func (app *App) FlagSet(name string, errorHandling flag.ErrorHandling, usage string) *flag.FlagSet {
-	fs := flag.NewFlagSet(name, errorHandling)
-	fs.BoolVar(&app.list, "l", false, "list sounds")
-	fs.StringVar(&app.sound, "s", "", "play a sound")
-	return fs
 }
 
 // List prints a list of the synthdefs.
