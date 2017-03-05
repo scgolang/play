@@ -1,0 +1,4 @@
+play is a framework for command line apps that want to control a set of synthdefs.
+
+See API docs here: http://godoc.org/github.com/scgolang/play
+An example app is: http://github.com/scgolang/fitton
